@@ -2244,10 +2244,15 @@
 </style>
 <script>
   // Set theme before first paint to avoid a flash of the wrong mode.
+  // Default is dark; only switch to light if user explicitly chose it.
   (function(){
     try{
       var saved = localStorage.getItem('ephemeris-theme');
-      if (saved !== 'light') document.documentElement.setAttribute('data-theme','dark');
+      if (saved === 'light'){
+        document.documentElement.removeAttribute('data-theme');
+      } else {
+        document.documentElement.setAttribute('data-theme','dark');
+      }
     } catch(e){
       document.documentElement.setAttribute('data-theme','dark');
     }
