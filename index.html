@@ -2165,6 +2165,39 @@
     padding-bottom:1px;
   }
   .air-map-link:hover{ color:var(--wax); border-color:var(--wax); }
+
+  .air-route-globe-wrap{
+    margin-top:4px;
+    margin-bottom:10px;
+    border:1px solid var(--rule-light);
+    border-radius:6px;
+    overflow:hidden;
+    background:var(--paper-deep);
+  }
+  .air-route-globe-canvas-wrap{
+    position:relative;
+    width:100%;
+    height:220px;
+    touch-action:none;
+  }
+  .air-route-globe-canvas-wrap canvas{
+    width:100%; height:100%; display:block; cursor:grab;
+  }
+  .air-route-globe-caption{
+    font-family:'Spectral', serif;
+    font-style:italic;
+    font-size:10.5px;
+    color:var(--muted);
+    padding:7px 10px;
+    border-top:1px solid var(--rule-light);
+  }
+  .air-route-globe-pending{
+    font-family:'Spectral', serif;
+    font-style:italic;
+    font-size:11px;
+    color:var(--muted);
+    padding:10px;
+  }
   .air-note{
     margin-top:16px;
     font-family:'Spectral', serif;
@@ -4500,7 +4533,27 @@ function buildEarthGlobe(canvasId, wrapId, opts){
   var scene = new THREE.Scene();
   var camera = new THREE.PerspectiveCamera(45, wrap.clientWidth/wrap.clientHeight, 1, 5000);
   camera.position.set(0, 0, R * (opts.startDist || 3.2));
-  var renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
+  var renderer;
+  try {
+    renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
+  } catch (e) {
+    // Some constrained WebViews (e.g. in-app browsers) refuse to create a
+    // WebGL context at all, especially once a couple of other globes on the
+    // same page already hold one. Fail visibly instead of leaving a dead
+    // canvas with no explanation.
+    wrap.innerHTML = '<div style="padding:14px;font-family:Spectral,serif;font-style:italic;font-size:12px;color:var(--muted, #888);">3D view unavailable \u2014 this browser (or in-app browser, if you opened this from a link) couldn\u2019t create a WebGL context. Try opening the page directly in Chrome or Safari instead.</div>';
+    return null;
+  }
+  // If the context is lost later (low GPU memory, OS reclaiming it, etc.),
+  // the canvas otherwise just freezes on a broken-image icon forever with no
+  // indication anything went wrong. Show a plain message and stop the render
+  // loop instead.
+  var contextLost = false;
+  canvas.addEventListener('webglcontextlost', function(e){
+    e.preventDefault();
+    contextLost = true;
+    wrap.insertAdjacentHTML('beforeend', '<div class="globe-context-lost-note" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:14px;text-align:center;font-family:Spectral,serif;font-style:italic;font-size:12px;color:var(--muted, #888);background:inherit;">3D view lost (the browser reclaimed it, usually from low memory) \u2014 reload the page to bring it back.</div>');
+  });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
   function resize(){
     var w = wrap.clientWidth, h = wrap.clientHeight || 340;
@@ -4705,6 +4758,7 @@ function buildEarthGlobe(canvasId, wrapId, opts){
   var extraTick = null; // optional per-frame callback set by the caller
   function animate(){
     requestAnimationFrame(animate);
+    if (contextLost) return; // stop driving a dead context; see webglcontextlost handler above
     _animT += 0.04;
     if (!dragging && (velX !== 0 || velY !== 0)){
       rotY += velY;
@@ -5623,6 +5677,7 @@ function buildEarthGlobe(canvasId, wrapId, opts){
   // information does not change between 8-second position refreshes.
   var routeCache = {};   // callsign -> {route, origin, destination} | 'pending' | 'none'
   var photoCache = {};   // hex -> {url, credit} | 'pending' | 'none'
+  var hexToRouteKey = {}; // aircraft hex -> its callsign-derived route cache key, for the route-globe toggle
 
   function fetchPhoto(hex){
     if (!hex) return Promise.resolve(null);
@@ -5862,6 +5917,81 @@ function buildEarthGlobe(canvasId, wrapId, opts){
     if (!code) return null;
     var k = code.trim().toUpperCase();
     return AIRPORTS[k] || null;
+  }
+
+  // Converts a 2-letter ISO country code into its flag emoji by mapping each
+  // letter to a Unicode regional indicator symbol — the same technique used
+  // for the hardcoded launch-site flags elsewhere on this page, just done
+  // programmatically since airport countries aren't known ahead of time.
+  function flagFromIso2(code){
+    if (!code || code.length !== 2) return '';
+    var c = code.toUpperCase();
+    var base = 0x1F1E6; // regional indicator 'A'
+    var a = c.charCodeAt(0) - 65, b = c.charCodeAt(1) - 65;
+    if (a < 0 || a > 25 || b < 0 || b > 25) return '';
+    return String.fromCodePoint(base + a) + String.fromCodePoint(base + b);
+  }
+
+  // Resolves an ICAO/IATA airport code to {name, city, country, flag, lat, lon}.
+  // Coordinates check the curated local table first (no network cost); the
+  // country code always comes from hexdb.io, since the local table doesn't
+  // carry one and a wrong guess from the ICAO prefix alone is worse than no
+  // flag at all. Both lookups are cached so a route shown twice, or two
+  // routes sharing an airport, never refetch.
+  var airportCoordCache = {}; // code -> {n,c,la,lo} | 'none', coordinates only
+  var airportCountryCache = {}; // code -> 'XX' (ISO2) | 'none', country only
+  function fetchAirportCountry(code){
+    var k = code.trim().toUpperCase();
+    if (airportCountryCache[k] && airportCountryCache[k] !== 'pending'){
+      return Promise.resolve(airportCountryCache[k] === 'none' ? null : airportCountryCache[k]);
+    }
+    if (airportCountryCache[k] === 'pending') return Promise.resolve(null);
+    airportCountryCache[k] = 'pending';
+    return fetch('https://hexdb.io/api/v1/airport/icao/' + encodeURIComponent(k))
+      .then(function(r){ if (!r.ok) throw new Error('no airport'); return r.json(); })
+      .then(function(data){
+        var cc = (data && data.country_code) ? data.country_code : null;
+        airportCountryCache[k] = cc || 'none';
+        return cc;
+      })
+      .catch(function(){ airportCountryCache[k] = 'none'; return null; });
+  }
+  function fetchAirportCoords(code){
+    if (!code) return Promise.resolve(null);
+    var k = code.trim().toUpperCase();
+    var local = AIRPORTS[k];
+
+    function withCountry(base){
+      return fetchAirportCountry(k).then(function(cc){
+        base.country = cc || null;
+        base.flag = cc ? flagFromIso2(cc) : '';
+        return base;
+      });
+    }
+
+    if (local && typeof local.la === 'number'){
+      return withCountry({ n: local.n, c: local.c, la: local.la, lo: local.lo });
+    }
+    if (airportCoordCache[k] && airportCoordCache[k] !== 'pending'){
+      return airportCoordCache[k] === 'none' ? Promise.resolve(null) : withCountry(Object.assign({}, airportCoordCache[k]));
+    }
+    if (airportCoordCache[k] === 'pending') return Promise.resolve(null);
+    airportCoordCache[k] = 'pending';
+    return fetch('https://hexdb.io/api/v1/airport/icao/' + encodeURIComponent(k))
+      .then(function(r){ if (!r.ok) throw new Error('no airport'); return r.json(); })
+      .then(function(data){
+        if (!data || data.status === '404' || typeof data.latitude !== 'number'){
+          airportCoordCache[k] = 'none'; return null;
+        }
+        var result = { n: data.airport || k, c: data.region_name || null, la: data.latitude, lo: data.longitude };
+        airportCoordCache[k] = result;
+        // The same response already carries country_code — reuse it instead
+        // of firing a second request for the country lookup above.
+        var cc = data.country_code || null;
+        airportCountryCache[k] = cc || 'none';
+        return withCountry(Object.assign({}, result));
+      })
+      .catch(function(){ airportCoordCache[k] = 'none'; return null; });
   }
 
   // Renders an origin→destination pair. The raw ICAO code is always the
@@ -6323,6 +6453,7 @@ function buildEarthGlobe(canvasId, wrapId, opts){
         '<div class="air-detail-panel">' +
           '<div class="air-photo-wrap" id="air-photo-' + hex + '"><span class="air-photo-placeholder">looking for a photo\u2026</span></div>' +
           '<div class="air-detail-grid">' + detailGridHtml + '</div>' +
+          '<div class="air-route-globe-wrap" id="air-route-globe-wrap-' + hex + '" style="display:none;"></div>' +
           '<a class="air-map-link" href="' + mapHref + '" target="_blank" rel="noopener">view exact position on a map \u2197</a>' +
         '</div>' +
 
@@ -6341,13 +6472,172 @@ function buildEarthGlobe(canvasId, wrapId, opts){
         var nowOpen = row.classList.toggle('open');
         var idBar = row.querySelector('[role="button"]');
         if (idBar) idBar.setAttribute('aria-expanded', nowOpen ? 'true' : 'false');
-        if (nowOpen) loadPhoto(hex);
+        if (nowOpen){ loadPhoto(hex); loadRouteGlobe(hex); }
       }
       el.addEventListener('click', doToggle);
       el.addEventListener('keydown', function(e){
         if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); doToggle(); }
       });
     });
+
+    // ── Route globe: A -> B arc on a small Earth, shown once a row with a
+    // known route is opened. One shared globe instance (and its single
+    // canvas) is reused across rows — the canvas element itself is moved
+    // into whichever row's wrapper is currently open, rather than spinning
+    // up a separate WebGL context per aircraft.
+    var ROUTE_GLOBE_WRAP_ID = 'air-route-globe-canvaswrap-shared';
+    var ROUTE_GLOBE_CANVAS_ID = 'air-route-globe-canvas-shared';
+    var routeGlobe = null; // { base, arcGroup, originDot, destDot, hostWrap } once built
+    function ensureRouteGlobe(){
+      if (routeGlobe) return routeGlobe;
+      if (typeof THREE === 'undefined') return null;
+      // The shared canvas lives detached until first needed, then gets
+      // reparented into whichever row's wrapper asks for it.
+      var hostWrap = document.createElement('div');
+      hostWrap.className = 'air-route-globe-canvas-wrap';
+      hostWrap.id = ROUTE_GLOBE_WRAP_ID;
+      var cnv = document.createElement('canvas');
+      cnv.id = ROUTE_GLOBE_CANVAS_ID;
+      hostWrap.appendChild(cnv);
+      document.body.appendChild(hostWrap); // temporary parent so buildEarthGlobe can size it
+      var base = buildEarthGlobe(ROUTE_GLOBE_CANVAS_ID, ROUTE_GLOBE_WRAP_ID, { startDist: 2.6 });
+      if (!base) return null;
+      var arcGroup = new THREE.Group();
+      base.scene.add(arcGroup);
+      var originDot = new THREE.Mesh(new THREE.SphereGeometry(2.0, 12, 12), new THREE.MeshBasicMaterial({ color: 0x4a5b4e }));
+      var destDot = new THREE.Mesh(new THREE.SphereGeometry(2.0, 12, 12), new THREE.MeshBasicMaterial({ color: 0xc9a44c }));
+      var originGlow = base.makeGlowSprite('rgba(74,91,78,1)', 16);
+      var destGlow = base.makeGlowSprite('rgba(201,164,76,1)', 16);
+      base.scene.add(originDot); base.scene.add(destDot);
+      base.scene.add(originGlow); base.scene.add(destGlow);
+      base.setTick(function(t){
+        var pulse = 0.6 + 0.4 * Math.sin(t);
+        originGlow.material.opacity = 0.45 + 0.25*pulse;
+        destGlow.material.opacity = 0.45 + 0.25*pulse;
+        originGlow.position.copy(originDot.position);
+        destGlow.position.copy(destDot.position);
+      });
+      routeGlobe = { base: base, arcGroup: arcGroup, originDot: originDot, destDot: destDot, hostWrap: hostWrap };
+      return routeGlobe;
+    }
+
+    // Builds a great-circle arc between two lon/lat points, lifted slightly
+    // above the surface so it doesn't z-fight with the globe texture.
+    function buildArcPoints(lat1, lon1, lat2, lon2, base){
+      var p1 = base.latLonToVec(lat1, lon1, 1);
+      var p2 = base.latLonToVec(lat2, lon2, 1);
+      var omega = Math.acos(Math.max(-1, Math.min(1, p1.dot(p2))));
+      var steps = 64, pts = [];
+      for (var i = 0; i <= steps; i++){
+        var f = i / steps;
+        var v;
+        if (omega < 1e-6){
+          v = p1.clone();
+        } else {
+          var a = Math.sin((1-f)*omega) / Math.sin(omega);
+          var b = Math.sin(f*omega) / Math.sin(omega);
+          v = new THREE.Vector3(
+            p1.x*a + p2.x*b, p1.y*a + p2.y*b, p1.z*a + p2.z*b
+          ).normalize();
+        }
+        // Lift altitude peaks at the arc's midpoint, tapering to the surface
+        // at each end — a simple stand-in for a greatcircle flight profile.
+        var lift = 1 + 0.12 * Math.sin(f * Math.PI);
+        v.multiplyScalar(base.R * lift);
+        pts.push(v);
+      }
+      return pts;
+    }
+
+    // Loads and renders the A->B globe for a given aircraft's row, if (and
+    // only if) its route resolves to two airports we have coordinates for.
+    // Silently leaves the placeholder text in place otherwise — this mirrors
+    // the rest of the page's pattern of staying quiet rather than guessing
+    // when a lookup comes up empty.
+    //
+    // The aircraft list itself still refreshes every 8 seconds (positions
+    // need to stay current), but the globe redraw is throttled to once per
+    // ROUTE_GLOBE_REFRESH_MS — a flight's origin/destination airports don't
+    // change between polls, so redrawing the arc every 8s only added visual
+    // flicker with no informational benefit.
+    var ROUTE_GLOBE_REFRESH_MS = 30000;
+    var routeGlobeLastDrawn = {}; // hex -> { ts, originCode, destCode } of the last actual redraw
+    function loadRouteGlobe(hex){
+      var wrapEl2 = document.getElementById('air-route-globe-wrap-' + hex);
+      if (!wrapEl2) return;
+      var routeKey = hexToRouteKey[hex];
+      var cached = routeKey ? routeCache[routeKey] : null;
+      if (!cached || cached === 'pending' || cached === 'none' || !cached.origin || !cached.destination){
+        return; // no resolved route yet, or this flight genuinely has none
+      }
+      wrapEl2.style.display = 'block';
+
+      var last = routeGlobeLastDrawn[hex];
+      var sameRoute = last && last.originCode === cached.origin && last.destCode === cached.destination;
+      var withinThrottle = last && (Date.now() - last.ts) < ROUTE_GLOBE_REFRESH_MS;
+      if (sameRoute && withinThrottle && last.html){
+        // Re-show the last rendered caption immediately rather than going
+        // blank for a beat while the (throttled) redraw would otherwise
+        // re-resolve cached coordinates and rebuild the arc from scratch.
+        wrapEl2.innerHTML = last.html;
+        var rgExisting = ensureRouteGlobe();
+        if (rgExisting) wrapEl2.insertBefore(rgExisting.hostWrap, wrapEl2.firstChild);
+        return;
+      }
+
+      Promise.all([fetchAirportCoords(cached.origin), fetchAirportCoords(cached.destination)])
+        .then(function(results){
+          if (!document.body.contains(wrapEl2)) return; // row no longer in the DOM (list re-rendered)
+          var o = results[0], d = results[1];
+          if (!o || !d){
+            var missHtml = '<div class="air-route-globe-pending">' +
+              cached.origin + ' \u2192 ' + cached.destination +
+              ' \u2014 one or both airports aren\u2019t in our coordinate data, so no globe for this route.</div>';
+            wrapEl2.innerHTML = missHtml;
+            return;
+          }
+          var rg = ensureRouteGlobe();
+          if (!rg){
+            wrapEl2.innerHTML = '<div class="air-route-globe-pending">3D view unavailable in this browser.</div>';
+            return;
+          }
+          // Reparent the one shared canvas into this row's wrapper, with a
+          // caption underneath, then (re)draw the arc for this route.
+          var captionHtml = '<div class="air-route-globe-caption">' +
+            (o.flag ? o.flag + ' ' : '') + (o.c || o.n || cached.origin) +
+            ' \u2192 ' +
+            (d.flag ? d.flag + ' ' : '') + (d.c || d.n || cached.destination) +
+            ' \u2014 a great-circle arc between the two airports, not this flight\u2019s actual flown path. Drag to rotate, scroll to zoom.' +
+          '</div>';
+          wrapEl2.innerHTML = captionHtml;
+          wrapEl2.insertBefore(rg.hostWrap, wrapEl2.firstChild);
+
+          while (rg.arcGroup.children.length){
+            var line = rg.arcGroup.children[0];
+            rg.arcGroup.remove(line);
+            line.geometry.dispose();
+          }
+          var arcPts = buildArcPoints(o.la, o.lo, d.la, d.lo, rg.base);
+          var arcMat = new THREE.LineBasicMaterial({ color: 0xc9a44c, transparent: true, opacity: 0.85 });
+          rg.arcGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(arcPts), arcMat));
+
+          rg.originDot.position.copy(rg.base.latLonToVec(o.la, o.lo, rg.base.R * 1.01));
+          rg.destDot.position.copy(rg.base.latLonToVec(d.la, d.lo, rg.base.R * 1.01));
+          // The globe factory sizes itself once at construction time against
+          // its original parent; force a resize now that it lives in a
+          // differently-sized host so the canvas pixel buffer matches.
+          window.dispatchEvent(new Event('resize'));
+
+          // Remember this draw so the next poll within ROUTE_GLOBE_REFRESH_MS
+          // can just redisplay the caption instead of redrawing from scratch.
+          routeGlobeLastDrawn[hex] = { ts: Date.now(), originCode: cached.origin, destCode: cached.destination, html: captionHtml };
+        })
+        .catch(function(){
+          if (document.body.contains(wrapEl2)){
+            wrapEl2.innerHTML = '<div class="air-route-globe-pending">couldn\u2019t plot this route right now.</div>';
+          }
+        });
+    }
 
     // Photo loader for the detail panel — fetched lazily, only once a row is
     // actually opened, so we don't burn requests on aircraft nobody looks at.
@@ -6375,10 +6665,6 @@ function buildEarthGlobe(canvasId, wrapId, opts){
       });
     }
 
-    // Rows that were already open before this refresh (poll cycle) should have
-    // their photo re-attached, since innerHTML replacement wiped the <img>.
-    Object.keys(openHexes).forEach(function(hex){ if (hex) loadPhoto(hex); });
-
     // Populate route asynchronously per row, without blocking or re-rendering
     // the list. Each result patches only its own row. Skips anything already
     // resolved synchronously above from a previous poll.
@@ -6386,6 +6672,7 @@ function buildEarthGlobe(canvasId, wrapId, opts){
       var hex = (ac.hex || '').trim();
       if (!hex) return;
       var routeKey = ac.flight ? ac.flight.trim().toUpperCase() : null;
+      hexToRouteKey[hex] = routeKey; // remembered for the route-globe toggle, below
       var routeEl = document.getElementById('air-route-' + hex);
 
       var routeAlreadyResolved = routeKey && routeCache[routeKey] && routeCache[routeKey] !== 'pending';
@@ -6400,6 +6687,18 @@ function buildEarthGlobe(canvasId, wrapId, opts){
           }
         });
       }
+    });
+
+    // Rows that were already open before this refresh (poll cycle) should have
+    // their photo and route globe re-attached, since innerHTML replacement
+    // wiped both — the row itself reopens via wasOpen above, but its
+    // detail-panel contents need to be reloaded into the fresh DOM. This runs
+    // after hexToRouteKey is populated above, so a route resolved in an
+    // earlier poll is available immediately rather than waiting one more cycle.
+    Object.keys(openHexes).forEach(function(hex){
+      if (!hex) return;
+      loadPhoto(hex);
+      loadRouteGlobe(hex);
     });
   }
 
