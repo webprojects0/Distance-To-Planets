@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-L0YLBXKTRP"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-L0YLBXKTRP');
+</script>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FAQ: Planetary Distance, Light-Time & Space Travel Questions Answered | Distance to Planets</title>
+<meta name="description" content="Answers to 20 common questions about planetary distance, light-time delay, Mars travel time, launch windows, the Moon, Voyager 1, the ISS, and how the calculator works.">
+<link rel="canonical" href="https://distancetoplanets.com/faq.html">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23F2ECDC'/><circle cx='16' cy='16' r='5' fill='%238C2F1B'/><circle cx='16' cy='16' r='11' fill='none' stroke='%23A89C7E' stroke-width='1.2'/><circle cx='27' cy='16' r='2' fill='%234A5B4E'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Spectral:ital,wght@0,400;1,400;1,500&family=Source+Code+Pro:wght@400;500;600&display=swap" rel="stylesheet">
+<meta property="og:title" content="FAQ: Planetary Distance, Light-Time & Space Travel Questions Answered | Distance to Planets">
+<meta property="og:description" content="Answers to 20 common questions about planetary distance, light-time delay, Mars travel time, launch windows, the Moon, Voyager 1, the ISS, and how the calculator works.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://distancetoplanets.com/faq.html">
+<meta property="og:site_name" content="Distance to Planets">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="FAQ: Planetary Distance, Light-Time & Space Travel Questions Answered | Distance to Planets">
+<meta name="twitter:description" content="Answers to 20 common questions about planetary distance, light-time delay, Mars travel time, launch windows, the Moon, Voyager 1, the ISS, and how the calculator works.">
+<style>
+  :root{
+    --paper: #F2ECDC;
+    --paper-deep: #EAE2CC;
+    --ink: #1B1B17;
+    --ink-soft: #4A453A;
+    --rule: #A89C7E;
+    --rule-light: #CFC4A4;
+    --wax: #8C2F1B;
+    --verdigris: #4A5B4E;
+    --muted: #6B6354;
+  }
+  *{ margin:0; padding:0; box-sizing:border-box; }
+  html{ background:var(--paper); }
+  body{
+    background:var(--paper);
+    background-image:
+      repeating-linear-gradient(0deg, rgba(0,0,0,0.012) 0px, rgba(0,0,0,0.012) 1px, transparent 1px, transparent 3px),
+      url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="180" height="180"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch"/><feColorMatrix type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.035 0"/></filter><rect width="100%25" height="100%25" filter="url(%23n)"/></svg>');
+    background-blend-mode:normal, multiply;
+    color:var(--ink);
+    font-family:'Source Serif 4', Georgia, serif;
+    min-height:100vh;
+  }
+  @media (prefers-reduced-motion: reduce){ *{ animation-duration:0.01ms !important; transition-duration:0.01ms !important; } }
+  .foxing{
+    position:fixed; inset:0; pointer-events:none; z-index:0; opacity:0.5;
+    background:
+      radial-gradient(ellipse 140px 100px at 8% 6%, rgba(140,103,58,0.10), transparent 70%),
+      radial-gradient(ellipse 90px 130px at 96% 18%, rgba(140,103,58,0.07), transparent 70%),
+      radial-gradient(ellipse 160px 110px at 90% 88%, rgba(140,103,58,0.08), transparent 70%),
+      radial-gradient(ellipse 70px 70px at 4% 80%, rgba(140,103,58,0.06), transparent 70%);
+  }
+  .page{ position:relative; z-index:1; max-width:760px; margin:0 auto; padding:48px 32px 90px; animation: settle 0.5s ease-out; }
+  @keyframes settle{ from{ opacity:0; transform:translateY(6px); } to{ opacity:1; transform:translateY(0); } }
+  @media (prefers-reduced-motion: reduce){ .page{ animation:none; } }
+
+  .minibar{
+    display:flex; justify-content:space-between; align-items:center; gap:8px;
+    margin-bottom:18px;
+  }
+  .back-link{
+    font-family:'Source Code Pro', monospace; font-size:12px; color:var(--muted);
+    text-decoration:none; letter-spacing:0.02em;
+  }
+  .back-link:hover{ color:var(--wax); }
+  .theme-toggle{ font-family:'Source Code Pro', monospace; font-size:14px; color:var(--muted); background:none; border:none; cursor:pointer; }
+  .theme-toggle:hover{ color:var(--wax); }
+
+  .page-nav{
+    display:flex; gap:2px; overflow-x:auto; scrollbar-width:none;
+    border-bottom:1px solid var(--rule); padding:0 0 10px; margin:0 0 30px;
+  }
+  .page-nav::-webkit-scrollbar{ display:none; }
+  .page-nav a{
+    flex-shrink:0; font-family:'Source Code Pro', monospace; font-size:11px; letter-spacing:0.02em;
+    color:var(--ink-soft); text-decoration:none; padding:5px 10px; border:1px solid transparent; white-space:nowrap;
+  }
+  .page-nav a:hover{ color:var(--wax); }
+  .page-nav a.current{ color:var(--wax); border-bottom:1px solid var(--wax); }
+
+  .masthead{ position:relative; text-align:center; padding:8px 0 28px; border-bottom:1px solid var(--rule); margin-bottom:34px; }
+  .masthead::after{
+    content:''; position:absolute; left:50%; bottom:-1px; transform:translateX(-50%);
+    width:46px; height:3px; background:var(--wax); opacity:0.85;
+  }
+  .masthead .kicker{ font-family:'Spectral', serif; font-style:italic; font-size:14px; color:var(--wax); letter-spacing:0.03em; }
+  .masthead h1{ font-size:clamp(26px, 4.4vw, 38px); font-weight:700; letter-spacing:0.01em; margin:8px 0 10px; line-height:1.15; }
+  .masthead .colophon{ font-family:'Spectral', serif; font-style:italic; font-size:14px; color:var(--ink-soft); max-width:520px; margin:0 auto; line-height:1.5; }
+
+  .content{ font-size:16px; line-height:1.75; color:var(--ink); }
+  .content p{ margin-bottom:16px; }
+  .content ul, .content ol{ margin:0 0 16px 22px; }
+  .content li{ margin-bottom:8px; }
+  .content h2{ font-size:21px; font-weight:700; margin:34px 0 10px; line-height:1.3; }
+  .section-title{ display:flex; align-items:baseline; gap:12px; margin:36px 0 4px; }
+  .section-title h2{ font-size:19px; font-weight:700; white-space:nowrap; }
+  .section-title .rule{ flex:1; height:1px; background:var(--rule); }
+  .content h3{ font-size:16px; font-weight:600; margin:20px 0 8px; color:var(--ink); }
+  .content a{ color:var(--wax); text-decoration:none; border-bottom:1px solid var(--rule); }
+  .content a:hover{ border-color:var(--wax); }
+  .updated-note{
+    font-family:'Source Code Pro', monospace; font-size:11.5px; color:var(--muted);
+    letter-spacing:0.02em; margin-bottom:8px;
+  }
+  .faq-item{ padding:18px 0; border-top:1px solid var(--rule-light); }
+  .faq-item:first-of-type{ border-top:none; }
+  .faq-item .q{ font-weight:600; margin-bottom:6px; }
+  .faq-item .q::before{ content:'Q. '; color:var(--wax); }
+  .faq-item .a::before{ content:'A. '; color:var(--verdigris); font-weight:600; }
+  .toc{
+    font-family:'Source Code Pro', monospace; font-size:12px; line-height:1.9;
+    border:1px solid var(--rule-light); padding:14px 18px; margin:22px 0 8px;
+    columns: 2; column-gap: 24px;
+  }
+  .toc a{ color:var(--ink-soft); text-decoration:none; display:block; break-inside: avoid; }
+  .toc a:hover{ color:var(--wax); }
+  @media (max-width: 520px){ .toc{ columns:1; } }
+  .breadcrumb{
+    font-family:'Source Code Pro', monospace; font-size:11px; color:var(--muted);
+    letter-spacing:0.02em; margin-bottom:16px;
+  }
+  .breadcrumb a{ color:var(--muted); text-decoration:none; }
+  .breadcrumb a:hover{ color:var(--wax); }
+  .related{ margin-top:44px; padding-top:22px; border-top:1px solid var(--rule); }
+  .related h2{ font-size:15px; font-family:'Source Code Pro', monospace; letter-spacing:0.03em; text-transform:uppercase; color:var(--muted); margin-bottom:14px; font-weight:600; }
+  .related ul{ list-style:none; margin:0; padding:0; }
+  .related li{ margin-bottom:10px; }
+  .related a{ font-family:'Source Serif 4', serif; font-size:15.5px; color:var(--ink); text-decoration:none; border-bottom:1px solid var(--rule); }
+  .related a:hover{ color:var(--wax); border-color:var(--wax); }
+
+  html[data-theme="dark"]{
+    --paper: #1B1B17; --paper-deep: #232319; --ink: #ECE6D6; --ink-soft: #C9C2AC;
+    --rule: #5A5546; --rule-light: #3A372D; --wax: #E2785A; --verdigris: #7FAE8C; --muted: #9A9280;
+  }
+  html[data-theme="dark"] body{ background-blend-mode:normal, screen; }
+  html[data-theme="dark"] .foxing{ opacity:0.18; }
+</style>
+<script>
+  // Set theme before first paint to avoid a flash of the wrong mode.
+  // Default is dark; only switch to light if user explicitly chose it.
+  (function(){
+    try{
+      var saved = localStorage.getItem('ephemeris-theme');
+      if (saved === 'light'){
+        document.documentElement.removeAttribute('data-theme');
+      } else {
+        document.documentElement.setAttribute('data-theme','dark');
+      }
+    } catch(e){
+      document.documentElement.setAttribute('data-theme','dark');
+    }
+  })();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    { "@type": "Question", "name": "What does \"distance to Mars\" actually mean on this site?",
+      "acceptedAnswer": { "@type": "Answer", "text": "It is the real, straight-line distance between Earth and the planet at this exact moment, calculated from each body's current orbital position — not an average or a textbook figure." } },
+    { "@type": "Question", "name": "How often is the distance updated?",
+      "acceptedAnswer": { "@type": "Answer", "text": "The calculator recomputes positions continuously using orbital models, so the figure you see reflects the current moment rather than a cached or daily value." } },
+    { "@type": "Question", "name": "Why is the number different from what I saw on another site or in the news?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Most quoted figures are long-term averages or closest-approach records. This site reports the actual live distance right now, which is almost never the same as an average." } },
+    { "@type": "Question", "name": "What is light-time delay, and why does it matter?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Light-time delay is how long it takes light, radio, or any signal to cross the distance between two points. It matters for spacecraft because it sets a hard floor on how quickly a command can be sent and a response received." } },
+    { "@type": "Question", "name": "How long does it take a signal to reach Mars?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Between roughly 3 and 22 minutes one-way, depending on where Earth and Mars currently sit in their orbits, meaning a round-trip conversation can take up to 44 minutes." } },
+    { "@type": "Question", "name": "Does light-time delay change over the course of a mission?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Yes. As Earth and Mars move along their orbits, the delay shifts continuously, growing and shrinking over months as the two planets draw closer together or farther apart." } },
+    { "@type": "Question", "name": "What is the closest Mars has ever been to Earth?",
+      "acceptedAnswer": { "@type": "Answer", "text": "The closest possible approach is around 56 million kilometres, a configuration that happens only rarely because both orbits are elliptical and rarely align perfectly." } },
+    { "@type": "Question", "name": "How long does it take to travel to Mars?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Most robotic missions take 6 to 9 months one-way using an efficient transfer trajectory, though the exact time depends on the launch date and how much fuel the mission is willing to spend." } },
+    { "@type": "Question", "name": "Why don't we launch to Mars whenever we want?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Launch windows open roughly every 26 months, when Earth and Mars are positioned so a spacecraft can reach Mars using a reasonable amount of fuel; launching outside that window costs far more energy." } },
+    { "@type": "Question", "name": "Why does the Moon's distance from Earth change?",
+      "acceptedAnswer": { "@type": "Answer", "text": "The Moon's orbit is elliptical rather than a perfect circle, so its distance from Earth swings between about 356,500 km at its closest and 406,700 km at its farthest over roughly a month." } },
+    { "@type": "Question", "name": "What's the difference between perigee and apogee?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Perigee is the point in the Moon's orbit where it is closest to Earth; apogee is the point where it is farthest away. Each occurs about once per lunar month." } },
+    { "@type": "Question", "name": "How far is Jupiter from Earth?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Jupiter's distance from Earth ranges from about 588 million to 968 million kilometres, depending on where both planets are in their orbits, with light taking over half an hour to cross the gap at closest approach." } },
+    { "@type": "Question", "name": "How far is Voyager 1 right now, and is it still transmitting?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Voyager 1 is over 24 billion kilometres from Earth and still sending data, making it the most distant human-made object in existence, though its distance keeps growing every second." } },
+    { "@type": "Question", "name": "Will Voyager 1 ever leave the solar system?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Voyager 1 has already left the heliosphere and entered interstellar space, but it remains gravitationally bound to the Sun and won't fully exit the solar system's outer reaches for tens of thousands of years." } },
+    { "@type": "Question", "name": "How far away is the International Space Station?",
+      "acceptedAnswer": { "@type": "Answer", "text": "The ISS orbits at roughly 400 to 420 kilometres above Earth's surface — closer than the distance between many major cities — while completing a full orbit about every 93 minutes." } },
+    { "@type": "Question", "name": "Why does the ISS look so much closer than the Moon?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Because it is: the ISS orbits roughly 400 km up, while the Moon sits around 384,000 km away on average — nearly a thousand times farther." } },
+    { "@type": "Question", "name": "What data does this site use to calculate distances?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Positions come from the VSOP87 planetary orbital model, a well-established method for computing where each planet sits at a given moment in time." } },
+    { "@type": "Question", "name": "How accurate are the numbers?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Accurate to within a few percent of true range — precise enough to understand scale and trends, but not intended for spacecraft navigation or scientific publication." } },
+    { "@type": "Question", "name": "What's the difference between average distance and current distance?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Average distance is calculated over a long time span and smooths out the highs and lows; current distance is where the planets actually are today, which can be far from that average in either direction." } },
+    { "@type": "Question", "name": "Which planet is closest to Earth on average?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Averaged over time, Mercury is actually the closest planet to Earth on average, even though Venus and Mars each get nearer on individual days." } }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://distancetoplanets.com/" },
+    { "@type": "ListItem", "position": 2, "name": "FAQ", "item": "https://distancetoplanets.com/faq.html" }
+  ]
+}
+</script>
+
+</head>
+<body>
+
+<div class="foxing" aria-hidden="true"></div>
+
+<div class="page">
+
+  <div class="minibar">
+    <a href="/" class="back-link">← Distance to Planets</a>
+    <button type="button" class="theme-toggle" id="themeToggle" title="Toggle dark mode">☉ / ☽</button>
+  </div>
+
+  <nav class="page-nav" aria-label="Site pages">
+    <a href="/">Calculator</a>
+    <a href="/blog.html">Blog</a>
+    <a href="/faq.html" class="current">FAQ</a>
+    <a href="/about-us.html">About us</a>
+    <a href="/contact-us.html">Contact us</a>
+    <a href="/privacy-policy.html">Privacy policy</a>
+    <a href="/terms-conditions.html">Terms &amp; conditions</a>
+  </nav>
+
+  <p class="breadcrumb"><a href="/">Home</a> &rsaquo; FAQ</p>
+
+  <div class="masthead">
+    <span class="kicker">Answered, in full</span>
+    <h1>Frequently Asked Questions</h1>
+    <p class="colophon">Twenty questions about planetary distance, light-time delay, Mars travel, the Moon, Voyager 1, and the ISS — answered in plain language, with the reasoning behind each number.</p>
+  </div>
+
+  <div class="content">
+    <p class="updated-note">Last updated: 11 July 2026</p>
+
+    <div class="toc">
+      <a href="#calculator">1. What does "distance to Mars" mean here?</a>
+      <a href="#update-frequency">2. How often is the distance updated?</a>
+      <a href="#different-numbers">3. Why is the number different elsewhere?</a>
+      <a href="#light-time-what">4. What is light-time delay?</a>
+      <a href="#light-time-mars">5. How long does a signal take to reach Mars?</a>
+      <a href="#light-time-changes">6. Does the delay change during a mission?</a>
+      <a href="#mars-closest">7. Closest Mars has ever been to Earth?</a>
+      <a href="#mars-travel-time">8. How long to travel to Mars?</a>
+      <a href="#launch-windows">9. Why not launch to Mars anytime?</a>
+      <a href="#moon-why-changes">10. Why does the Moon's distance change?</a>
+      <a href="#perigee-apogee">11. Perigee vs. apogee?</a>
+      <a href="#jupiter-distance">12. How far is Jupiter from Earth?</a>
+      <a href="#voyager-distance">13. How far is Voyager 1 right now?</a>
+      <a href="#voyager-leaving">14. Will Voyager 1 leave the solar system?</a>
+      <a href="#iss-distance">15. How far away is the ISS?</a>
+      <a href="#iss-vs-moon">16. Why does the ISS look closer than the Moon?</a>
+      <a href="#methodology">17. What data powers these calculations?</a>
+      <a href="#accuracy">18. How accurate are the numbers?</a>
+      <a href="#average-vs-current">19. Average distance vs. current distance?</a>
+      <a href="#closest-average">20. Which planet is closest on average?</a>
+    </div>
+
+    <div class="section-title" id="using"><h2>Using the calculator</h2><span class="rule"></span></div>
+
+    <div class="faq-item" id="calculator">
+      <p class="q">What does "distance to Mars" actually mean on this site?</p>
+      <p class="a">It's the real, straight-line distance between Earth and Mars right now, worked out from each planet's actual position in its orbit at this moment — not a textbook average and not the record closest approach. Because Earth and Mars orbit the Sun at different speeds and different distances, that live number is constantly changing, sometimes by millions of kilometres in a single week. The <a href="/">calculator</a> shows today's real figure; the <a href="/earth-mars-distance-explained.html">Earth–Mars distance article</a> explains why the swing is so large.</p>
+    </div>
+
+    <div class="faq-item" id="update-frequency">
+      <p class="q">How often is the distance updated?</p>
+      <p class="a">The positions are recalculated continuously from the underlying orbital model, so the number reflects the current moment rather than a value cached once a day. Planetary motion is smooth and gradual, so you won't see it jump — but check back tomorrow and the figure will have shifted, especially for planets whose orbits carry them quickly relative to Earth, like Mars or Venus.</p>
+    </div>
+
+    <div class="faq-item" id="different-numbers">
+      <p class="q">Why does the site show a distance that looks different from what I read elsewhere?</p>
+      <p class="a">Most published "distance to Mars" figures are the average distance or the closest-approach record — a single fixed number that gets repeated everywhere. This site calculates the current position of each body and reports the real, live distance, which is almost never the same as that average. See also: <a href="#average-vs-current">the difference between average and current distance</a> further down this page.</p>
+    </div>
+
+    <div class="section-title" id="light-time"><h2>Light-time delay & signals</h2><span class="rule"></span></div>
+
+    <div class="faq-item" id="light-time-what">
+      <p class="q">What is light-time delay, and why does it matter?</p>
+      <p class="a">Light-time delay is simply how long it takes light — or any radio signal, which travels at the same speed — to cross the distance between two points. It matters enormously for spacecraft, because it sets a hard physical floor on how fast a command can be sent and a response received. There's no way to engineer around it; the only way to reduce the delay is to reduce the distance. The <a href="/light-time-delay-explained.html">full explainer</a> covers why this forces Mars rovers to make many of their own driving decisions.</p>
+    </div>
+
+    <div class="faq-item" id="light-time-mars">
+      <p class="q">How long does a signal take to reach Mars?</p>
+      <p class="a">Anywhere from about 3 minutes at closest approach to roughly 22 minutes when Mars is on the far side of the Sun. That means a full round-trip — command sent, response received — can take up to 44 minutes, which is why real-time joystick control of a Mars rover simply isn't possible.</p>
+    </div>
+
+    <div class="faq-item" id="light-time-changes">
+      <p class="q">Does light-time delay change over the course of a mission?</p>
+      <p class="a">Yes, continuously. As Earth and Mars move along their orbits at different speeds, the delay grows and shrinks over a period of months, not days. Mission teams plan around this, scheduling more autonomous operation during the months when the delay is longest.</p>
+    </div>
+
+    <div class="section-title" id="mars"><h2>Mars distance & travel</h2><span class="rule"></span></div>
+
+    <div class="faq-item" id="mars-closest">
+      <p class="q">What is the closest Mars has ever been to Earth?</p>
+      <p class="a">The closest possible approach is around 56 million kilometres. That specific configuration is rare, because it requires Mars to be near the closest point in its elliptical orbit (perihelion) at the exact same time Earth catches up to it — a coincidence of timing that happens only once every fifteen to seventeen years. Most oppositions land somewhere between 75 and 100 million kilometres instead. More detail in the <a href="/earth-mars-distance-explained.html">Earth–Mars distance article</a>.</p>
+    </div>
+
+    <div class="faq-item" id="mars-travel-time">
+      <p class="q">How long would it take to travel to Mars?</p>
+      <p class="a">Most robotic missions take 6 to 9 months one-way, using a fuel-efficient transfer orbit that follows a wide curved path rather than a straight line. Faster trajectories are possible but burn far more fuel, and slower ones save fuel at the cost of a longer flight. The <a href="/travel-time-to-mars.html">travel-time article</a> breaks down how the launch date and trajectory choice affect the total.</p>
+    </div>
+
+    <div class="faq-item" id="launch-windows">
+      <p class="q">Why don't we launch to Mars whenever we want?</p>
+      <p class="a">Launch windows open roughly every 26 months, when Earth and Mars are positioned so that an efficient transfer trajectory actually reaches Mars. Launching outside that window is still technically possible, but it costs dramatically more fuel — often more than any realistic rocket can carry. See <a href="/mars-launch-windows-explained.html">how launch windows are chosen</a> for the full reasoning.</p>
+    </div>
+
+    <div class="section-title" id="moon"><h2>The Moon</h2><span class="rule"></span></div>
+
+    <div class="faq-item" id="moon-why-changes">
+      <p class="q">Why does the Moon's distance from Earth change?</p>
+      <p class="a">The Moon's orbit is an ellipse, not a perfect circle, so its distance from Earth swings between roughly 356,500 km at its closest and 406,700 km at its farthest over the course of about a month. The difference is large enough to be visible to the naked eye — a "supermoon" is simply a full moon that happens to coincide with the close end of that cycle. Full details in the <a href="/moon-distance-perigee-apogee.html">Moon distance article</a>.</p>
+    </div>
+
+    <div class="faq-item" id="perigee-apogee">
+      <p class="q">What's the difference between perigee and apogee?</p>
+      <p class="a">Perigee is the point in the Moon's monthly orbit where it comes closest to Earth; apogee is the point where it swings farthest away. Each happens roughly once per lunar month, and the two points aren't fixed in space — they slowly rotate over time, which is why "supermoons" don't happen on a perfectly regular schedule.</p>
+    </div>
+
+    <div class="section-title" id="outer"><h2>Outer planets & Voyager 1</h2><span class="rule"></span></div>
+
+    <div class="faq-item" id="jupiter-distance">
+      <p class="q">How far is Jupiter from Earth?</p>
+      <p class="a">Jupiter's distance from Earth ranges from about 588 million kilometres at its closest to roughly 968 million kilometres at its farthest, since both planets' elliptical orbits add up in different ways depending on where each one currently sits. Even at closest approach, light takes over half an hour to make the trip. See the <a href="/jupiter-distance-from-earth.html">Jupiter distance article</a> for the full range and how it's calculated.</p>
+    </div>
+
+    <div class="faq-item" id="voyager-distance">
+      <p class="q">How far is Voyager 1 from Earth right now, and is it still transmitting?</p>
+      <p class="a">Voyager 1 is over 24 billion kilometres from Earth and counting — it's the most distant human-made object ever built, and its distance grows by roughly 61,000 km every hour as it continues outward. It is still transmitting data back to Earth, though its radio signal now takes close to a full day to arrive. The <a href="/voyager-1-distance.html">Voyager 1 article</a> has the live figure and mission background.</p>
+    </div>
+
+    <div class="faq-item" id="voyager-leaving">
+      <p class="q">Will Voyager 1 ever leave the solar system?</p>
+      <p class="a">In one sense it already has: Voyager 1 crossed the heliopause and entered interstellar space in 2012, leaving the bubble of particles the Sun blows around itself. But it's still well within the Sun's gravitational influence, and won't clear the outer Oort Cloud — the true edge of the solar system — for roughly another 30,000 years.</p>
+    </div>
+
+    <div class="section-title" id="earth-orbit"><h2>Earth orbit & the ISS</h2><span class="rule"></span></div>
+
+    <div class="faq-item" id="iss-distance">
+      <p class="q">How far away is the International Space Station?</p>
+      <p class="a">The ISS orbits at roughly 400 to 420 kilometres above Earth's surface — closer than the distance between many major cities — while circling the entire planet about every 93 minutes, or roughly 16 times a day. Its altitude drifts slightly due to atmospheric drag and gets periodically boosted back up by docked spacecraft. Full details in the <a href="/iss-distance-from-earth.html">ISS distance article</a>.</p>
+    </div>
+
+    <div class="faq-item" id="iss-vs-moon">
+      <p class="q">Why does the ISS look so much closer than the Moon?</p>
+      <p class="a">Because it genuinely is — by a huge margin. The ISS sits about 400 km up, while the Moon orbits around 384,000 km away on average, making the Moon roughly a thousand times farther from Earth than the space station.</p>
+    </div>
+
+    <div class="section-title" id="methodology-section"><h2>Methodology & accuracy</h2><span class="rule"></span></div>
+
+    <div class="faq-item" id="methodology">
+      <p class="q">What data does this site use to calculate distances?</p>
+      <p class="a">Positions come from the VSOP87 planetary orbital model, a well-established analytical method for computing where each major planet sits at a given moment in time. It's the same family of model widely used in planetarium software and astronomy education tools.</p>
+    </div>
+
+    <div class="faq-item" id="accuracy">
+      <p class="q">How accurate are these numbers?</p>
+      <p class="a">Accurate to within a few percent of the true range — precise enough to understand scale, trends, and how dramatically distances swing over time, but not precise enough for spacecraft navigation or scientific publication. See the <a href="/terms-conditions.html">terms and conditions</a> for the full accuracy note.</p>
+    </div>
+
+    <div class="faq-item" id="average-vs-current">
+      <p class="q">What's the difference between "average distance" and "current distance"?</p>
+      <p class="a">Average distance is calculated by smoothing out every possible position over a long stretch of time — useful for comparing planets in general, but it tells you nothing about today. Current distance is where the planets actually are right now, which can sit far above or below that average depending on where each one happens to be in its orbit. A quoted "average" of 225 million km for Mars, for instance, is rarely close to the live number on any given day.</p>
+    </div>
+
+    <div class="faq-item" id="closest-average">
+      <p class="q">Which planet is closest to Earth on average?</p>
+      <p class="a">Somewhat counterintuitively, it's Mercury — not Venus or Mars. Averaged over long periods and every possible orbital alignment, Mercury spends more time closer to Earth than either neighbour, even though Venus or Mars will each be nearer on any individual day. The <a href="/closest-planet-to-earth.html">closest-planet article</a> walks through the math behind that result.</p>
+    </div>
+
+    <div class="related">
+      <h2>Keep reading</h2>
+      <ul>
+        <li><a href="/">Live planetary distance calculator</a></li>
+        <li><a href="/blog.html">All articles on the blog</a></li>
+        <li><a href="/earth-mars-distance-explained.html">Why the Earth–Mars distance changes so much</a></li>
+        <li><a href="/travel-time-to-mars.html">How long would it take to travel to Mars?</a></li>
+      </ul>
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+  (function(){
+    var html = document.documentElement;
+    var btn = document.getElementById('themeToggle');
+    if (btn){
+      btn.addEventListener('click', function(){
+        var isDark = html.getAttribute('data-theme') === 'dark';
+        if (isDark){ html.removeAttribute('data-theme'); try{localStorage.setItem('ephemeris-theme','light');}catch(e){} }
+        else { html.setAttribute('data-theme','dark'); try{localStorage.setItem('ephemeris-theme','dark');}catch(e){} }
+      });
+    }
+  })();
+</script>
+
+</body>
+</html>
